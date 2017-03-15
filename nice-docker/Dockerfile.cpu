@@ -185,9 +185,9 @@ RUN pip --no-cache-dir install --upgrade ipython && \
 ENV LD_LIBRARY_PATH /usr/lib/llvm-3.7/lib/
 ENV LLVM_CONFIG /usr/lib/llvm-3.7/bin/llvm-config
 
-
-RUN pip --no-cache-dir install  cython pytest pandas scikit-learn bayesian-optimization bhtsne tsne statsmodels line-profiler psutil spectrum memory_profiler pandas ipython[all] jupyter joblib pyparsing pydot pydot-ng graphviz pandoc SQLAlchemy flask toolz cloudpickle python-snappy s3fs widgetsnbextension ipywidgets terminado cytoolz bcolz blosc partd backports.lzma mock cachey moto pandas_datareader
 RUN pip install --upgrade pip
+RUN pip --no-cache-dir install  cython pytest pandas scikit-learn statsmodels line-profiler psutil spectrum memory_profiler pandas ipython[all] jupyter joblib pyparsing pydot pydot-ng graphviz pandoc SQLAlchemy flask toolz cloudpickle python-snappy s3fs widgetsnbextension ipywidgets terminado cytoolz bcolz blosc partd backports.lzma mock cachey moto pandas_datareader
+
 
 RUN pip install -i https://pypi.anaconda.org/sklam/simple llvmlite
 
