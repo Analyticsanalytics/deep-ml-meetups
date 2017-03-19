@@ -162,9 +162,10 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
 	python get-pip.py && \
 	rm get-pip.py
 
-RUN python -m pip install --upgrade --force pip
+#RUN python -m pip install --upgrade --force pip
+RUN pip install pip --upgrade
 RUN pip install pyOpenSSL ndg-httpsclient pyasn1
-#RUN pip install pip --upgrade
+
 
 
 # Install other useful Python packages using pip
