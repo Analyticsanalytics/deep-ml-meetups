@@ -269,8 +269,10 @@ WORKDIR "/root"
 
 RUN git clone https://github.com/dask/dask-tutorial.git ./dask-tutorial
 RUN git clone https://github.com/dask/dask-examples.git ./dask-examples
-RUN git clone https://github.com/vgvassilev/cling.git   ./cling
 
+
+RUN git clone https://github.com/vgvassilev/cling.git   ./cling
+RUN conda install libgcc
 RUN export PATH=/root/cling/bin:$PATH
 RUN cd /root/cling/tools/Jupyter/kernel
 RUN pip install -e .
