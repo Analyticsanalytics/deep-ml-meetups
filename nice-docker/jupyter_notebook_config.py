@@ -15,6 +15,11 @@
 import os
 from IPython.lib import passwd
 
+import sys;
+sys.path.append('/root/inst/share/')
+
+print (os.environ["PATH"])
+
 c.NotebookApp.ip = '*'
 c.NotebookApp.port = 8888
 c.NotebookApp.open_browser = False
