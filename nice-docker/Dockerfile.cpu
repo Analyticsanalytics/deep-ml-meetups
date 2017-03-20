@@ -8,7 +8,6 @@ MAINTAINER Shlomo <shlomo@deep-ml.com>
 #ENV LLVM_CONFIG /usr/local/opt/llvm/bin/llvm-config
 #ENV LLVM_CONFIG=/usr/lib/llvm-3.8/bin/llvm-config
 
-ARG DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_FRONTEND noninteractive
 
 
@@ -130,8 +129,7 @@ RUN apt-get update -qq \
  && apt-get install --no-install-recommends -y \
     # install python 2
     python \
-    python-dev \
-    python-pip \    
+    python-dev \   
     python-virtualenv \
     python-wheel \
 	python-tk \
@@ -157,15 +155,27 @@ RUN apt-get update -qq \
  && rm -rf /var/lib/apt/lists/*
 
 # Install pip
-
-RUN pip --no-cache-dir install setuptools==33.1.1
+# pip dependencies
+curl --silent https://bootstrap.pypa.io/get-pip.py | python && \
+RUN pip install werkzeug --upgrade && \
+RUN pip install pillow psycogreen && \
+RUN pip install Boto && \
+RUN pip install FileChunkIO && \
+RUN pip install pysftp && \
+RUN pip install rotate-backups && \
+RUN pip install oauthlib && \
+RUN pip install requests --upgrade && \
+# check that pip is not broken after requests --upgrade
+RUN pip --version
+    
+#RUN pip --no-cache-dir install setuptools==33.1.1
 #RUN python -m pip install --upgrade --force pip
 #RUN pip install pip --upgrade
 RUN pip install pyOpenSSL ndg-httpsclient pyasn1
 
 
 # Install other useful Python packages using pip
-RUN pip --no-cache-dir install --upgrade ipython && \
+RUN pip --no-cache-dir install ipython && \
 	pip --no-cache-dir install \
 		Cython \
 		ipykernel \
