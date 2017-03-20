@@ -162,8 +162,9 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
 	python get-pip.py && \
 	rm get-pip.py
 
+RUN pip install setuptools==33.1.1
 #RUN python -m pip install --upgrade --force pip
-RUN pip install pip --upgrade
+#RUN pip install pip --upgrade
 RUN pip install pyOpenSSL ndg-httpsclient pyasn1
 
 
