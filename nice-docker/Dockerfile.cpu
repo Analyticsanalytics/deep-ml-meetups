@@ -306,13 +306,13 @@ RUN ./clone.sh           # will require a few minutes to finish
 
 RUN export PATH=/root/inst/bin/:$PATH
 
-WORKDIR "/root/cling/tools/Jupyter/kernel/"
+WORKDIR "/root/inst/share/cling/Jupyter/kernel/"
 RUN pip install -e .
-WORKDIR "/root/cling/tools/Jupyter/kernel/"
-RUN ls -la "/root/cling/"
+WORKDIR "/root/inst/share/cling/Jupyter/kernel/"
+
 RUN pwd
 
-RUN jupyter-kernelspec install --user "/root/cling/tools/Jupyter/kernel/cling-cpp11"
+RUN jupyter-kernelspec install --user "/root/inst/share/cling/Jupyter/kernel/cling-cpp11"
 
 
 WORKDIR "/root/"
