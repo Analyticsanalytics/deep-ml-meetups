@@ -17,6 +17,12 @@
 pwd
 ls -la
 
+
+#export PATH=$PATH:/root/cling/bin
+export PATH=/root/inst/share/:$PATH
+
+which cling
+
 NCPUS=`python -c "import multiprocessing as mp; print(mp.cpu_count())"`
 echo "Detected $NCPUS cpus"
 
