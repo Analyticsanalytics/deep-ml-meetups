@@ -10,6 +10,7 @@ MAINTAINER Shlomo <shlomo@deep-ml.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
+ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 
 #Install base dependencies
 RUN apt-get update && apt-get install -y git wget vim groff cmake libboost-all-dev build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurlpp-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget liblapack-dev fortran-compiler  libedit-dev
@@ -36,7 +37,7 @@ RUN echo "/usr/lib/llvm-3.7/lib/" >> /etc/ld.so.conf && ldconfig
 ENV LD_LIBRARY_PATH /usr/lib/llvm-3.7/lib/
 ENV LLVM_CONFIG /usr/lib/llvm-3.7/bin/llvm-config
 
-RUN sudo apt-get update -qq \
+RUN apt-get update -qq \
  && apt-get install --no-install-recommends -y \
     # install python 3
     build-essential \
@@ -129,7 +130,7 @@ RUN apt-get update -qq \
  && apt-get install --no-install-recommends -y \
     # install python 2
     python \
-    python-dev \   
+    python-dev \
     python-virtualenv \
     python-wheel \
 	python-tk \
@@ -156,19 +157,21 @@ RUN apt-get update -qq \
 
 # Install pip
 # pip dependencies
-curl --silent https://bootstrap.pypa.io/get-pip.py | python && \
-RUN pip install werkzeug --upgrade && \
-RUN pip install pillow psycogreen && \
-RUN pip install Boto && \
-RUN pip install FileChunkIO && \
-RUN pip install pysftp && \
-RUN pip install rotate-backups && \
-RUN pip install oauthlib && \
-RUN pip install requests --upgrade && \
-# check that pip is not broken after requests --upgrade
+
+RUN curl --silent https://bootstrap.pypa.io/get-pip.py | python
+RUN pip --no-cache-dir install setuptools==33.1.1
+RUN pip install werkzeug
+RUN pip install pillow psycogreen
+RUN pip install Boto
+RUN pip install FileChunkIO
+RUN pip install nltk fuzzywuzzy
+RUN pip install --no-dependencies rotate-backups
+RUN pip install --no-dependencies oauthlib
+RUN pip install --no-dependencies requests
+
 RUN pip --version
-    
-#RUN pip --no-cache-dir install setuptools==33.1.1
+
+
 #RUN python -m pip install --upgrade --force pip
 #RUN pip install pip --upgrade
 RUN pip install pyOpenSSL ndg-httpsclient pyasn1
