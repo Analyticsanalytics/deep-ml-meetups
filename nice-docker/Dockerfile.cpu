@@ -12,6 +12,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 
+
 #Install base dependencies
 RUN apt-get update && apt-get install -y git wget vim groff cmake libboost-all-dev build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurlpp-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget liblapack-dev fortran-compiler  libedit-dev
 
@@ -284,12 +285,27 @@ WORKDIR "/root"
 RUN git clone https://github.com/dask/dask-tutorial.git ./dask-tutorial
 RUN git clone https://github.com/dask/dask-examples.git ./dask-examples
 
+WORKDIR /root/
+#RUN curl -sSL https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz | tar -xzC /root
+RUN wget http://www.cmake.org/files/v3.5/cmake-3.5.2.tar.gz
+RUN tar xf cmake-3.5.2.tar.gz
+WORKDIR /root/cmake-3.5.2
+RUN ./configure
+RUN make
+RUN make install
+
+ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/root
 
 
-RUN git clone https://github.com/vgvassilev/cling.git   ./cling
-#RUN conda install libgcc
-RUN export PATH=/root/cling/bin:$PATH
-#RUN cd /root/cling/tools/Jupyter/kernel
+WORKDIR "/root/"
+RUN wget https://raw.githubusercontent.com/karies/cling-all-in-one/master/clone.sh
+RUN chmod +x clone.sh
+RUN ./clone.sh           # will require a few minutes to finish
+
+#RUN git clone https://github.com/vgvassilev/cling.git   ./cling
+
+RUN export PATH=/root/inst/bin/:$PATH
+
 WORKDIR "/root/cling/tools/Jupyter/kernel/"
 RUN pip install -e .
 WORKDIR "/root/cling/tools/Jupyter/kernel/"
@@ -303,8 +319,9 @@ WORKDIR "/root/"
 RUN chmod +x run_jupyter.sh
 RUN ls -la
 
-##RUN ./run_jupyter.sh
-ENTRYPOINT ["./run_jupyter.sh"]
+
+#ENTRYPOINT ["./run_jupyter.sh"]
+#ENTRYPOINT ["./run_jupyter.sh"]
 #CMD daskd-scheduler &
 
 #CMD ["/bin/bash", "-c", "./run_jupyter.sh"]
