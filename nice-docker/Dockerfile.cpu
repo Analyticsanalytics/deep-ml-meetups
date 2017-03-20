@@ -227,12 +227,12 @@ RUN pip --no-cache-dir install theano && \
 	> /root/.theanorc
 
 
-ARG TENSORFLOW_VERSION=0.11.0
-ARG TENSORFLOW_DEVICE=cpu
-ARG TENSORFLOW_APPEND=
+ENV TENSORFLOW_VERSION=0.11.0
+ENV TENSORFLOW_DEVICE=cpu
+ENV TENSORFLOW_APPEND=
 RUN pip --no-cache-dir install https://storage.googleapis.com/tensorflow/linux/${TENSORFLOW_DEVICE}/tensorflow${TENSORFLOW_APPEND}-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
 
-ARG KERAS_VERSION=1.2.2
+ENV KERAS_VERSION=1.2.2
 ENV KERAS_BACKEND=tensorflow
 RUN pip --no-cache-dir install --no-dependencies git+https://github.com/fchollet/keras.git@${KERAS_VERSION}
 
@@ -256,10 +256,14 @@ RUN echo 'alias ll="ls --color=auto -lA"' >> /root/.bashrc \
 ENV PASSWD='sha1:98b767162d34:8da1bc3c75a0f29145769edc977375a373407824'
 
 
-# dump package lists
-RUN dpkg-query -l > /dpkg-query-l.txt \
- && pip3 freeze > /pip3-freeze.txt
+# RUN which python2.7 /usr/bin/python2.7
+RUN ls -la /usr/bin/python2.7
 
+RUN ln -s /opt/python2.7/lib/python2.7/config/libpython2.7.a /usr/local/lib/
+
+ENV LDFLAGS="-L/opt/python2.7/lib:usr/lib/openblas-base/"
+ENV PATH /usr/lib/openblas-base/:/usr/lib/openblas-base/bin/:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
+#RUN pip install tsne bhtsne
 
 RUN git clone https://github.com/dask/dask-tutorial.git ./dask-tutorial
 RUN git clone https://github.com/dask/dask-examples.git ./dask-examples
@@ -281,21 +285,26 @@ RUN git clone https://github.com/dask/dask-tutorial.git ./dask-tutorial
 RUN git clone https://github.com/dask/dask-examples.git ./dask-examples
 
 
+
 RUN git clone https://github.com/vgvassilev/cling.git   ./cling
-RUN conda install libgcc
+#RUN conda install libgcc
 RUN export PATH=/root/cling/bin:$PATH
-RUN cd /root/cling/tools/Jupyter/kernel
+#RUN cd /root/cling/tools/Jupyter/kernel
+WORKDIR "/root/cling/tools/Jupyter/kernel/"
 RUN pip install -e .
-
-RUN ./jupyter-kernelspec install --user cling-c++11
-
+WORKDIR "/root/cling/tools/Jupyter/kernel/"
+RUN ls -la "/root/cling/"
 RUN pwd
-RUN df -k
+
+RUN jupyter-kernelspec install --user "/root/cling/tools/Jupyter/kernel/cling-cpp11"
+
+
+WORKDIR "/root/"
 RUN chmod +x run_jupyter.sh
 RUN ls -la
 
 ##RUN ./run_jupyter.sh
-
+ENTRYPOINT ["./run_jupyter.sh"]
 #CMD daskd-scheduler &
 
 #CMD ["/bin/bash", "-c", "./run_jupyter.sh"]
