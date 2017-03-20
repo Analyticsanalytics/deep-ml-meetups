@@ -1,4 +1,6 @@
-# All-in-one Docker image for Deep Learning, Bayesian Machine Learning and Distributed DataFrames
+# All-in-one Jupyter Docker image for: Deep Learning, Bayesian Machine Learning, Distributed DataFrames, C++11/C++14 support for Jupyter notebook
+
+https://github.com/QuantScientist/deep-ml-meetups
 
 ![Jup](jup.png)
 
