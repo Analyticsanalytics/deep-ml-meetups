@@ -1,4 +1,4 @@
-# All-in-one Jupyter Docker image for: Deep Learning, Bayesian Machine Learning, Distributed DataFrames, C++11/C++14 support for Jupyter notebook
+# All-in-one Jupyter Docker image for: Deep Learning, Bayesian Machine Learning, Distributed DataFrames, C++11/C++14 support, Eigen3, TensorFlow and more
 
 https://github.com/QuantScientist/deep-ml-meetups
 
