@@ -16,9 +16,14 @@ import os
 from IPython.lib import passwd
 
 import sys;
-sys.path.append('/root/inst/share/')
+sys.path.append('/root/inst/bin/')
 
 print (os.environ["PATH"])
+
+from distutils.spawn import find_executable
+whichCling = find_executable('cling')
+
+print ('cling =' + str(whichCling))
 
 c.NotebookApp.ip = '*'
 c.NotebookApp.port = 8888
