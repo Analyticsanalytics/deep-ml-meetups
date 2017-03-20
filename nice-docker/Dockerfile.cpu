@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 
 #Install base dependencies
-RUN apt-get update && apt-get install -y git wget cmake build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurlpp-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget liblapack-dev fortran-compiler  libedit-dev
+RUN apt-get update && apt-get install -y git wget vim groff cmake libboost-all-dev build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurlpp-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget liblapack-dev fortran-compiler  libedit-dev
 
 RUN apt-get update
 
@@ -27,7 +27,7 @@ deb-src http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main" >> /etc/apt/
 
 RUN wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | apt-key add -
 
-RUN apt-get update && apt-get install -y clang-3.7 libclang-common-3.7-dev libclang-3.7-dev libclang1-3.7  libllvm-3.7-ocaml-dev libllvm3.7 lldb-3.7 llvm-3.7 llvm-3.7-dev llvm-3.7-runtime clang-modernize-3.7 clang-format-3.7 lldb-3.7-dev
+RUN apt-get update && apt-get install --no-install-recommends -y clang-3.7 libclang-common-3.7-dev libclang-3.7-dev libclang1-3.7  libllvm-3.7-ocaml-dev libllvm3.7 lldb-3.7 llvm-3.7 llvm-3.7-dev llvm-3.7-runtime clang-modernize-3.7 clang-format-3.7 lldb-3.7-dev
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -131,8 +131,7 @@ RUN apt-get update -qq \
     # install python 2
     python \
     python-dev \
-    python-pip \
-    python-setuptools \
+    python-pip \    
     python-virtualenv \
     python-wheel \
 	python-tk \
@@ -158,15 +157,11 @@ RUN apt-get update -qq \
  && rm -rf /var/lib/apt/lists/*
 
 # Install pip
-RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-	python get-pip.py && \
-	rm get-pip.py
 
-RUN pip install setuptools==33.1.1
+RUN pip --no-cache-dir install setuptools==33.1.1
 #RUN python -m pip install --upgrade --force pip
 #RUN pip install pip --upgrade
 RUN pip install pyOpenSSL ndg-httpsclient pyasn1
-
 
 
 # Install other useful Python packages using pip
