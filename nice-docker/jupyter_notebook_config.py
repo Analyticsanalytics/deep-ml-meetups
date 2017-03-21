@@ -1,4 +1,4 @@
-# Copyright 2015 The TensorFlow Authors. All Rights Reserved.
+# Copyright 2015 The deep-ml.com Authors. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 import os
 from IPython.lib import passwd
 
-import sys;
+import sys
 sys.path.append('/root/inst/bin/')
 
 print (os.environ["PATH"])
