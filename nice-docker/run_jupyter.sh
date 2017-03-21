@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright 2015 The TensorFlow Authors. All Rights Reserved.
+# Copyright 2015 deep-ml.com. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,19 +19,15 @@ ls -la
 
 
 #export PATH=$PATH:/root/cling/bin
-export PATH=/root/inst/bin/:$PATH
-
-echo $PATH
-
-which cling
-
 NCPUS=`python -c "import multiprocessing as mp; print(mp.cpu_count())"`
 echo "Detected $NCPUS cpus"
 
 python -c "import sys; sys.path.append('/root/inst/bin/')"
+export PATH=/root/inst/bin/:$PATH
 
-export PATH=/root/inst/share/:$PATH
+echo $PATH
+which cling
 
-dask-scheduler --host localhost &
-dask-worker localhost:8786 $* &
+#dask-scheduler --host localhost &
+#dask-worker localhost:8786 $* &
 jupyter notebook "$@" &
