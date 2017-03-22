@@ -5,13 +5,12 @@ FROM ubuntu:trusty
 
 MAINTAINER Shlomo <shlomo@deep-ml.com>
 
-#ENV LLVM_CONFIG /usr/local/opt/llvm/bin/llvm-config
-#ENV LLVM_CONFIG=/usr/lib/llvm-3.8/bin/llvm-config
-
 ENV DEBIAN_FRONTEND noninteractive
 
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 
+RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get clean
 
 #Install base dependencies
 RUN apt-get update && apt-get install -y git wget vim groff libboost-all-dev build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurlpp-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget liblapack-dev fortran-compiler  libedit-dev
@@ -296,7 +295,7 @@ WORKDIR /root/
 RUN apt-get install software-properties-common
 RUN add-apt-repository ppa:george-edison55/cmake-3.x
 RUN apt-get update
-RUN apt-get install cmake
+RUN apt-get install -y libeigen3-dev cmake
 
 
 RUN apt-get update && apt-get install -y git build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurlpp-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget
