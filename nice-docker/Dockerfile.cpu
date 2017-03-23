@@ -9,13 +9,44 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 
-RUN rm -rf /var/lib/apt/lists/*
-RUN apt-get clean
+#RUN rm -rf /var/lib/apt/lists/*
+#RUN apt-get clean
+
+RUN apt-get update && apt-get install -y git cmake build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget unzip
+
+#wget vim groff libboost-all-dev build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurlpp-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget liblapack-dev fortran-compiler  libedit-dev
+
+RUN cmake --version
+
+WORKDIR /root
+RUN git clone https://github.com/jpbarrette/curlpp.git
+WORKDIR /root/curlpp
+RUN cmake .
+RUN make install
+
+WORKDIR /root
+RUN git clone https://github.com/beniz/deepdetect.git && cd deepdetect && mkdir build
+
+WORKDIR /root/deepdetect/build
+RUN cmake .. -DUSE_XGBOOST=OFF
+RUN make
+
+# external volume to be mapped, e.g. for models or training data
+RUN mkdir /data
+VOLUME ["/data"]
+
+# include a few image models within the image
+RUN mkdir /root/models
+WORKDIR /root/models
+RUN mkdir ggnet && cd ggnet && wget http://www.deepdetect.com/models/ggnet/bvlc_googlenet.caffemodel
+RUN mkdir resnet_50 && cd resnet_50 && wget http://www.deepdetect.com/models/resnet/ResNet-50-model.caffemodel && wget http://www.deepdetect.com/models/resnet/ResNet_mean.binaryproto
+RUN cp /root/deepdetect/datasets/imagenet/corresp_ilsvrc12.txt /root/models/ggnet/corresp.txt
+RUN cp /root/deepdetect/datasets/imagenet/corresp_ilsvrc12.txt /root/models/resnet_50/corresp.txt
+RUN cp /root/deepdetect/templates/caffe/googlenet/*prototxt /root/models/ggnet/
+RUN cp /root/deepdetect/templates/caffe/resnet_50/*prototxt /root/models/resnet_50/
+
 
 #Install base dependencies
-RUN apt-get update && apt-get install -y git wget vim groff libboost-all-dev build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurlpp-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget liblapack-dev fortran-compiler  libedit-dev
-
-RUN apt-get update
 
 
 # Very complicated step, took me hours to make it works. this is required for fastparquet
@@ -197,7 +228,7 @@ ENV LD_LIBRARY_PATH /usr/lib/llvm-3.7/lib/
 ENV LLVM_CONFIG /usr/lib/llvm-3.7/bin/llvm-config
 
 
-RUN pip --no-cache-dir install  cython pytest pandas scikit-learn statsmodels line-profiler psutil spectrum memory_profiler pandas ipython[all] jupyter joblib pyparsing pydot pydot-ng graphviz pandoc SQLAlchemy flask toolz cloudpickle python-snappy s3fs widgetsnbextension ipywidgets terminado cytoolz bcolz blosc partd backports.lzma mock cachey moto pandas_datareader
+RUN pip --no-cache-dir install  cython pytest pandas scikit-learn statsmodels  line-profiler psutil spectrum memory_profiler pandas ipython[all] jupyter joblib pyparsing pydot pydot-ng graphviz pandoc SQLAlchemy flask toolz cloudpickle python-snappy s3fs widgetsnbextension ipywidgets terminado cytoolz bcolz blosc partd backports.lzma mock cachey moto pandas_datareader
 
 
 RUN pip install -i https://pypi.anaconda.org/sklam/simple llvmlite
@@ -283,37 +314,25 @@ WORKDIR "/root"
 RUN git clone https://github.com/dask/dask-tutorial.git ./dask-tutorial
 RUN git clone https://github.com/dask/dask-examples.git ./dask-examples
 
+RUN apt-get -qqy install libeigen3-dev
+
 WORKDIR /root/
-#RUN curl -sSL https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz | tar -xzC /root
-#RUN wget http://www.cmake.org/files/v3.5/cmake-3.5.2.tar.gz
-#RUN tar xf cmake-3.5.2.tar.gz
-#WORKDIR /root/cmake-3.5.2
-#RUN ./configure
-#RUN make
-#RUN make install
+RUN curl -sSL https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz | tar -xzC /root
+RUN wget http://www.cmake.org/files/v3.5/cmake-3.5.2.tar.gz
+RUN tar xf cmake-3.5.2.tar.gz
+WORKDIR /root/cmake-3.5.2
+RUN ./configure
+RUN make
+RUN make install
 
 RUN apt-get install software-properties-common
 RUN add-apt-repository ppa:george-edison55/cmake-3.x
 RUN apt-get update
-RUN apt-get install -y libeigen3-dev cmake
-
-
-RUN apt-get update && apt-get install -y git build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurlpp-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget
-
-WORKDIR "/root"
-RUN git clone https://github.com/beniz/deepdetect.git && cd deepdetect && mkdir build
-
-WORKDIR "/root/deepdetect/build"
-RUN cmake .. -DUSE_XGBOOST=ON
-RUN make
-
-# external volume to be mapped, e.g. for models or training data
-RUN mkdir /data-docker
-VOLUME ["/data-docker"]
-
+RUN apt-get install --upgrade  -y libeigen3-dev cmake
 
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/root
 
+RUN cmake --version
 
 WORKDIR "/root/"
 RUN wget https://raw.githubusercontent.com/karies/cling-all-in-one/master/clone.sh
@@ -327,11 +346,10 @@ RUN export PATH=/root/inst/bin/:$PATH
 WORKDIR "/root/inst/share/cling/Jupyter/kernel/"
 RUN pip install -e .
 WORKDIR "/root/inst/share/cling/Jupyter/kernel/"
-
-RUN pwd
-
 RUN jupyter-kernelspec install --user "/root/inst/share/cling/Jupyter/kernel/cling-cpp11"
 
+#RUN jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++17" && \
+#  jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++14" && \
 
 WORKDIR "/root/"
 RUN chmod +x run_jupyter.sh
