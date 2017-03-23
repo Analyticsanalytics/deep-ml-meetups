@@ -295,6 +295,7 @@ ENV LDFLAGS="-L/opt/python2.7/lib:usr/lib/openblas-base/"
 ENV PATH /usr/lib/openblas-base/:/usr/lib/openblas-base/bin/:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 #RUN pip install tsne bhtsne
 
+
 #RUN git clone https://github.com/dask/dask-tutorial.git ./dask-tutorial
 #RUN git clone https://github.com/dask/dask-examples.git ./dask-examples
 
@@ -303,6 +304,11 @@ COPY jupyter_notebook_config.py /root/.jupyter/
 
 # Jupyter has issues with being run directly: https://github.com/ipython/ipython/issues/7062
 COPY run_jupyter.sh /root/
+
+WORKDIR "/root/"
+RUN chmod +x run_jupyter.sh
+RUN ls -la
+
 
 RUN jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
@@ -332,7 +338,11 @@ RUN apt-get install --upgrade  -y libeigen3-dev cmake
 
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/root
 
-RUN cmake --version
+RUN apt-get -qqy install libsasl2-dev libldap2-dev libssl-dev
+RUN pip install superset pyhive mysqlclient
+RUN pip install  python-ldap superset pyhive
+#RUN fabmanager create-admin --app superset
+
 
 WORKDIR "/root/"
 RUN wget https://raw.githubusercontent.com/karies/cling-all-in-one/master/clone.sh
@@ -350,10 +360,6 @@ RUN jupyter-kernelspec install --user "/root/inst/share/cling/Jupyter/kernel/cli
 
 #RUN jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++17" && \
 #  jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++14" && \
-
-WORKDIR "/root/"
-RUN chmod +x run_jupyter.sh
-RUN ls -la
 
 
 #ENTRYPOINT ["./run_jupyter.sh"]
