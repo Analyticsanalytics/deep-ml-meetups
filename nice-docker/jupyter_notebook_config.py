@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-import os
-from IPython.lib import passwd
-
 import sys
 sys.path.append('/root/inst/bin/')
 
@@ -26,7 +23,7 @@ whichCling = find_executable('cling')
 print ('cling =' + str(whichCling))
 
 c.NotebookApp.ip = '*'
-c.NotebookApp.port = 8888
+c.NotebookApp.port = 7842
 c.NotebookApp.open_browser = False
 c.MultiKernelManager.default_kernel_name = 'python2'
 
