@@ -15,7 +15,7 @@
 import sys
 sys.path.append('/root/inst/bin/')
 
-print (os.environ["PATH"])
+# print (os.environ["PATH"])
 
 from distutils.spawn import find_executable
 whichCling = find_executable('cling')
