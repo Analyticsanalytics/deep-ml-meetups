@@ -345,18 +345,18 @@ RUN pip install  python-ldap superset pyhive
 
 
 WORKDIR "/root/"
-RUN wget https://raw.githubusercontent.com/karies/cling-all-in-one/master/clone.sh
-RUN chmod +x clone.sh
-RUN ./clone.sh           # will require a few minutes to finish
+#RUN wget https://raw.githubusercontent.com/karies/cling-all-in-one/master/clone.sh
+#RUN chmod +x clone.sh
+#RUN ./clone.sh           # will require a few minutes to finish
 
 #RUN git clone https://github.com/vgvassilev/cling.git   ./cling
 
-RUN export PATH=/root/inst/bin/:$PATH
+#RUN export PATH=/root/inst/bin/:$PATH
 
-WORKDIR "/root/inst/share/cling/Jupyter/kernel/"
-RUN pip install -e .
-WORKDIR "/root/inst/share/cling/Jupyter/kernel/"
-RUN jupyter-kernelspec install --user "/root/inst/share/cling/Jupyter/kernel/cling-cpp11"
+#WORKDIR "/root/inst/share/cling/Jupyter/kernel/"
+#RUN pip install -e .
+#WORKDIR "/root/inst/share/cling/Jupyter/kernel/"
+#RUN jupyter-kernelspec install --user "/root/inst/share/cling/Jupyter/kernel/cling-cpp11"
 
 #RUN jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++17" && \
 #  jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++14" && \
