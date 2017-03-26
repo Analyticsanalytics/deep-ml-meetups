@@ -29,4 +29,6 @@ c.MultiKernelManager.default_kernel_name = 'python2'
 
 # sets a password if PASSWORD is set in the environment
 c.NotebookApp.token = ''
-c.NotebookApp.password = ''
+#c.NotebookApp.password = ''
+# password is eric=123
+NotebookApp.password='sha1:65db47cf7e0d:d440485d58ec9fcc8b587c0aa96864f2f1816edd'
