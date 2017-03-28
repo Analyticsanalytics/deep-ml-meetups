@@ -12,7 +12,7 @@ ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 #RUN rm -rf /var/lib/apt/lists/*
 #RUN apt-get clean
 
-RUN apt-get update && apt-get install -y git cmake build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget unzip
+RUN apt-get update && apt-get install -y git cmake build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget unzip supervisor
 
 #wget vim groff libboost-all-dev build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurlpp-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget liblapack-dev fortran-compiler  libedit-dev
 
@@ -191,7 +191,7 @@ RUN apt-get update -qq \
 RUN curl --silent https://bootstrap.pypa.io/get-pip.py | python
 RUN pip --no-cache-dir install setuptools==33.1.1
 RUN pip install werkzeug
-RUN pip install pillow psycogreen
+RUN pip install pillow psycogreen flask celery redis
 RUN pip install Boto
 RUN pip install FileChunkIO
 RUN pip install nltk fuzzywuzzy
@@ -365,5 +365,8 @@ WORKDIR "/root/"
 #ENTRYPOINT ["./run_jupyter.sh"]
 #ENTRYPOINT ["./run_jupyter.sh"]
 #CMD daskd-scheduler &
-
+ needs to be set else Celery gives an error (because docker runs commands inside container as root)
+#ENV C_FORCE_ROOT=1
+# run supervisord
+#CMD ["/usr/bin/supervisord"]
 #CMD ["/bin/bash", "-c", "./run_jupyter.sh"]
