@@ -398,7 +398,7 @@ WORKDIR "/root/"
 #ENTRYPOINT ["./run_jupyter.sh"]
 #ENTRYPOINT ["./run_jupyter.sh"]
 #CMD daskd-scheduler &
- needs to be set else Celery gives an error (because docker runs commands inside container as root)
+#needs to be set else Celery gives an error (because docker runs commands inside container as root)
 #ENV C_FORCE_ROOT=1
 # run supervisord
 #CMD ["/usr/bin/supervisord"]
