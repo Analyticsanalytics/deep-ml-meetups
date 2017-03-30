@@ -316,7 +316,7 @@ RUN apt-get install --upgrade  -y libeigen3-dev cmake
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/root
 
 RUN apt-get -qqy install libsasl2-dev libldap2-dev libssl-dev
-RUN pip install superset pyhive mysqlclient skflow bayesian-optimization
+RUN pip install superset pyhive mysqlclient skflow bayesian-optimization scikit-neuralnetwork
 RUN pip install  python-ldap superset pyhive
 #RUN fabmanager create-admin --app superset
 
