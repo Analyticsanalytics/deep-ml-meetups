@@ -24,27 +24,6 @@ WORKDIR /root/curlpp
 RUN cmake .
 RUN make install
 
-WORKDIR /root
-RUN git clone https://github.com/beniz/deepdetect.git && cd deepdetect && mkdir build
-
-WORKDIR /root/deepdetect/build
-RUN cmake .. -DUSE_XGBOOST=OFF
-RUN make
-
-# external volume to be mapped, e.g. for models or training data
-RUN mkdir /data
-VOLUME ["/data"]
-
-# include a few image models within the image
-RUN mkdir /root/models
-WORKDIR /root/models
-RUN mkdir ggnet && cd ggnet && wget http://www.deepdetect.com/models/ggnet/bvlc_googlenet.caffemodel
-RUN mkdir resnet_50 && cd resnet_50 && wget http://www.deepdetect.com/models/resnet/ResNet-50-model.caffemodel && wget http://www.deepdetect.com/models/resnet/ResNet_mean.binaryproto
-RUN cp /root/deepdetect/datasets/imagenet/corresp_ilsvrc12.txt /root/models/ggnet/corresp.txt
-RUN cp /root/deepdetect/datasets/imagenet/corresp_ilsvrc12.txt /root/models/resnet_50/corresp.txt
-RUN cp /root/deepdetect/templates/caffe/googlenet/*prototxt /root/models/ggnet/
-RUN cp /root/deepdetect/templates/caffe/resnet_50/*prototxt /root/models/resnet_50/
-
 
 #Install base dependencies
 
@@ -376,7 +355,7 @@ VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
 
 
-
+USER root
 WORKDIR "/root/"
 #RUN wget https://raw.githubusercontent.com/karies/cling-all-in-one/master/clone.sh
 #RUN chmod +x clone.sh
