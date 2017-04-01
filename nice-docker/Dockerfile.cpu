@@ -317,7 +317,7 @@ ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/root
 
 RUN pip install --upgrade --no-deps theano tensorflow
 RUN apt-get -qqy install libsasl2-dev libldap2-dev libssl-dev
-RUN pip install superset pyhive mysqlclient skflow bayesian-optimization scikit-neuralnetwork
+RUN pip install superset pyhive mysqlclient skflow bayesian-optimization scikit-neuralnetwork simplejson ujson bson pyyaml
 RUN pip install  python-ldap superset pyhive
 #RUN fabmanager create-admin --app superset
 
