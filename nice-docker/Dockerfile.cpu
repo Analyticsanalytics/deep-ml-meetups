@@ -313,17 +313,11 @@ RUN add-apt-repository ppa:george-edison55/cmake-3.x
 RUN apt-get update
 RUN apt-get install --upgrade  -y libeigen3-dev cmake
 
-
-RUN echo "deb https://dl.bintray.com/wangzw/deb trusty contrib" | sudo tee /etc/apt/sources.list.d/bintray-wangzw-deb.list
-RUN apt-get -qqy install -y apt-transport-https
-RUN apt-get -qqy update
-RUN apt-get -qqy install libhdfs3 libhdfs3-dev
-RUN pip install hdfs3
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/root
 
 RUN pip install --upgrade --no-deps theano tensorflow
 RUN apt-get -qqy install libsasl2-dev libldap2-dev libssl-dev
-RUN pip install superset pyhive mysqlclient skflow bayesian-optimization scikit-neuralnetwork hdfs3
+RUN pip install superset pyhive mysqlclient skflow bayesian-optimization scikit-neuralnetwork
 RUN pip install  python-ldap superset pyhive
 #RUN fabmanager create-admin --app superset
 
