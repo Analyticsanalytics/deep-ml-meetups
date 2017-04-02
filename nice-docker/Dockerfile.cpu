@@ -372,7 +372,7 @@ WORKDIR "/root/"
 #RUN jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++17" && \
 #  jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++14" && \
 
-RUN sudo apt-get install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev	
+RUN sudo apt-get install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev	
 
 #ENTRYPOINT ["./run_jupyter.sh"]
 #ENTRYPOINT ["./run_jupyter.sh"]
