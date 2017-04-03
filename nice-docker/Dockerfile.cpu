@@ -3,15 +3,16 @@
 FROM ubuntu:trusty
 #FROM debian:stretch
 
+#FROM nvidia/cuda:8.0-devel-ubuntu16.04
+
 MAINTAINER Shlomo <shlomo@deep-ml.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 
-
-#RUN rm -rf /var/lib/apt/lists/*
-#RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get clean
 
 RUN apt-get update && apt-get install -y git cmake build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget unzip supervisor
 
@@ -24,6 +25,47 @@ RUN git clone https://github.com/jpbarrette/curlpp.git
 WORKDIR /root/curlpp
 RUN cmake .
 RUN make install
+
+
+RUN apt-get update && apt-get install -y software-properties-common && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        clinfo \
+        cmake \
+        git \
+        libboost-all-dev \
+        libfftw3-dev \
+        libfontconfig1-dev \
+        libfreeimage-dev \
+        liblapack-dev \
+        liblapacke-dev \
+        libopenblas-dev \
+        ocl-icd-opencl-dev \
+        opencl-headers \
+        wget \
+        xorg-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Setting up symlinks for libcuda and OpenCL ICD
+RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/lib/libcuda.so.1 && \
+    ln -s /usr/lib/libcuda.so.1 /usr/lib/libcuda.so && \
+    mkdir -p /etc/OpenCL/vendors && \
+    echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd && \
+    echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
+ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
+
+WORKDIR /root
+
+# Build GLFW from source
+RUN git clone https://github.com/glfw/glfw.git && \
+    cd glfw && \
+    mkdir build && \
+    cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=/usr .. && \
+    make -j4 && \
+    make install
+
 
 
 # Very complicated step, took me hours to make it works. this is required for fastparquet
@@ -289,15 +331,11 @@ RUN ls -la
 
 RUN jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
-# Expose Ports for TensorBoard (6006), Ipython (8888) drill
-EXPOSE 6006 3838 8787 8888 8786 9786 8788
 
 WORKDIR "/root"
 
-RUN git clone https://github.com/dask/dask-tutorial.git ./dask-tutorial
-RUN git clone https://github.com/dask/dask-examples.git ./dask-examples
-
 RUN apt-get -qqy install libeigen3-dev
+
 
 #WORKDIR /root/
 #RUN curl -sSL https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz | tar -xzC /root
@@ -308,10 +346,20 @@ RUN apt-get -qqy install libeigen3-dev
 #RUN make
 #RUN make install
 
+WORKDIR /root/
+RUN wget https://cmake.org/files/v3.8/cmake-3.8.0-rc4.tar.gz
+RUN tar -xvf cmake-3.8.0-rc4.tar.gz
+RUN cd cmake-3.8.0-rc4
+RUN /root/cmake-3.8.0-rc4/bootstrap
+RUN make
+RUN make install
+
+
 RUN apt-get install software-properties-common
 RUN add-apt-repository ppa:george-edison55/cmake-3.x
 RUN apt-get update
-RUN apt-get install --upgrade  -y libeigen3-dev cmake
+
+RUN apt-get install --upgrade  -y libeigen3-dev
 
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/root
 
@@ -344,8 +392,6 @@ RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.co
 # And add ``listen_addresses`` to ``/etc/postgresql/9.3/main/postgresql.conf``
 RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
 
-# Expose the PostgreSQL port
-EXPOSE 5432
 
 # Add VOLUMEs to allow backup of config, logs and databases
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
@@ -354,6 +400,27 @@ VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
 
 USER root
+
+RUN  apt-get -qqy  install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev  libsdl2-dev
+
+
+
+
+WORKDIR /root/
+RUN git clone https://github.com/ocornut/imgui.git
+WORKDIR /root/imgui/examples/opengl3_example/
+RUN make
+#RUN make install
+
+
+
+# Expose Ports for TensorBoard (6006), Ipython (8888) drill
+EXPOSE 6006 3838 8787 8888 8786 9786 8788
+# Expose the PostgreSQL port
+EXPOSE 5432
+
+
+
 
 WORKDIR "/root/"
 #RUN wget https://raw.githubusercontent.com/karies/cling-all-in-one/master/clone.sh
@@ -372,7 +439,7 @@ WORKDIR "/root/"
 #RUN jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++17" && \
 #  jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++14" && \
 
-RUN sudo apt-get install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev	
+#RUN apt-get -qqy  install mesa-common-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev
 
 #ENTRYPOINT ["./run_jupyter.sh"]
 #ENTRYPOINT ["./run_jupyter.sh"]
@@ -382,3 +449,4 @@ RUN sudo apt-get install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev li
 # run supervisord
 #CMD ["/usr/bin/supervisord"]
 #CMD ["/bin/bash", "-c", "./run_jupyter.sh"]
+
