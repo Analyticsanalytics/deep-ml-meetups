@@ -370,8 +370,8 @@ RUN pip install  python-ldap superset pyhive
 #RUN fabmanager create-admin --app superset
 
 
-RUN apt-get -qqy install libpq-dev postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
-RUN pip install psycopg2
+RUN apt-get -qqy install libpq-dev postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3 python3-tables
+RUN pip install psycopg2 PyTables
 RUN pip install SQLAlchemy
 RUN apt-get -qqy install postgresql postgresql-contrib
 # Run the rest of the commands as the ``postgres`` user created by the ``postgres-9.3`` package when it was ``apt-get installed``
