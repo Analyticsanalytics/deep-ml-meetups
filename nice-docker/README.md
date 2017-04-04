@@ -36,7 +36,7 @@ On top of all the fancy deep learning libraries, this docker image contains:
 docker pull quantscientist/deep-ml-meetups
 
 # Run the image
-docker run -it -p 5555:5555 -p 7842:7842 -p 8787:8787 -p 8786:8786 -p 8788:8788 -v /myhome/data-science/:/root/sharedfolder quantscientist/deep-ml-meetups bash
+docker run -it -p 5555:5555 -p 7842:7842 -p 8787:8787 -p 8786:8786 -p 8788:8788 -v /myhome/data-science/:/root/sharedfolder  --env="DISPLAY"  --env="QT_X11_NO_MITSHM=1"  --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw"  quantscientist/deep-ml-meetups bash
 
 
 # Run Jupyter
