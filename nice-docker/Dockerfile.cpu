@@ -11,16 +11,17 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 
+
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get clean
 
-RUN apt-get update && apt-get install -y git cmake build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget unzip supervisor
-
 # install debian packages
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update -qq \
- && apt-get install --no-install-recommends -y \
-    # install python 2
+
+
+#Install dependencies
+RUN apt-get update && apt-get install --no-install-recommends  -y \
+    git cmake build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget unzip supervisor \
     python \
     python-dev \
     python2.7-dev \
@@ -46,12 +47,6 @@ RUN apt-get update -qq \
 	python-sympy \
 	ipython \
 	python-joblib \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
-
-#Install dependencies
-RUN apt-get update && apt-get install --no-install-recommends  -y \
-        # install essentials
         build-essential \
         software-properties-common \
         g++ \
@@ -193,30 +188,6 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
 
 # Very complicated step, took me hours to make it works. this is required for fastparquet
 
-RUN echo "deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty main \n\
-deb-src http://llvm.org/apt/trusty/ llvm-toolchain-trusty main \n\
-deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main \n\
-deb-src http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main" >> /etc/apt/sources.list
-
-RUN wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | apt-key add -
-
-RUN apt-get update && apt-get install --no-install-recommends -y clang-3.7 libclang-common-3.7-dev libclang-3.7-dev libclang1-3.7  libllvm-3.7-ocaml-dev libllvm3.7 lldb-3.7 llvm-3.7 llvm-3.7-dev llvm-3.7-runtime clang-modernize-3.7 clang-format-3.7 lldb-3.7-dev
-
-RUN apt-get update -qq \
- && apt-get install --no-install-recommends -y \
-    # install python 3
-    build-essential \
-    clang-3.7 \
-    lldb-3.7 \
-    llvm-3.7 \
-    python-clang-3.7 \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN echo "/usr/lib/llvm-3.7/lib/" >> /etc/ld.so.conf && ldconfig
 
 RUN echo "deb http://ppa.launchpad.net/keithw/glfw3/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list.d/fillwave_ext.list
 RUN echo "deb-src http://ppa.launchpad.net/keithw/glfw3/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list.d/fillwave_ext.list
@@ -242,27 +213,11 @@ RUN make
 
 RUN curl --silent https://bootstrap.pypa.io/get-pip.py | python
 RUN pip --no-cache-dir install setuptools==33.1.1
-RUN pip install werkzeug
-RUN pip install pillow psycogreen flask celery redis
-RUN pip install Boto
-RUN pip install FileChunkIO
-RUN pip install nltk fuzzywuzzy
-RUN pip install --no-dependencies rotate-backups
-RUN pip install --no-dependencies oauthlib
-RUN pip install --no-dependencies requests
-
-RUN pip --version
-
-
-#RUN python -m pip install --upgrade --force pip
-#RUN pip install pip --upgrade
-RUN pip install pyOpenSSL ndg-httpsclient pyasn1
-
-
 # Install other useful Python packages using pip
 RUN pip --no-cache-dir install ipython && \
 	pip --no-cache-dir install \
 		Cython \
+		werkzeug pillow psycogreen flask celery redis Boto FileChunkIO nltk fuzzywuzzy rotate-backups oauthlib requests pyOpenSSL ndg-httpsclient pyasn1 \
 		ipykernel \
 		jupyter \
 		path.py \
@@ -279,24 +234,11 @@ RUN pip --no-cache-dir install ipython && \
 ENV LD_LIBRARY_PATH /usr/lib/llvm-3.7/lib/
 ENV LLVM_CONFIG /usr/lib/llvm-3.7/bin/llvm-config
 
+RUN apt-get -qyy install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libfreetype6-dev libssl-dev libudev-dev libxrandr-dev
 
-RUN pip --no-cache-dir install  cython pytest pandas scikit-learn statsmodels  line-profiler psutil spectrum memory_profiler pandas ipython[all] jupyter joblib pyparsing pydot pydot-ng graphviz pandoc SQLAlchemy flask toolz cloudpickle python-snappy s3fs widgetsnbextension ipywidgets terminado cytoolz bcolz blosc partd backports.lzma mock cachey moto pandas_datareader
-
-
-RUN pip install -i https://pypi.anaconda.org/sklam/simple llvmlite
-
-#RUN pip install llvmlite
-
-# Distributed dataframes
-RUN pip --no-cache-dir install numba
-RUN pip --no-cache-dir install git+https://github.com/dask/dask.git
-RUN pip --no-cache-dir install git+https://github.com/dask/distributed.git
-
+RUN pip --no-cache-dir install  cython pytest pandas scikit-learn statsmodels  line-profiler psutil spectrum memory_profiler pandas ipython[all] jupyter joblib pyparsing pydot pydot-ng graphviz pandoc SQLAlchemy flask toolz cloudpickle python-snappy s3fs widgetsnbextension ipywidgets terminado cytoolz bcolz blosc partd backports.lzma mock cachey moto pandas_datareader numba git+https://github.com/dask/dask.git git+https://github.com/dask/distributed.git
+#RUN pip install -i https://pypi.anaconda.org/sklam/simple llvmlite
 RUN pip --no-cache-dir install fastparquet
-
-#please point LLVM_CONFIG to the path for llvm-config
-
-#RUN pip --no-cache-dir install  llvmpy
 
 # Install Theano and set up Theano config (.theanorc) OpenBLAS
 RUN pip --no-cache-dir install theano && \
@@ -309,23 +251,13 @@ RUN pip --no-cache-dir install theano && \
 	> /root/.theanorc
 
 
-ENV TENSORFLOW_VERSION=0.11.0
-ENV TENSORFLOW_DEVICE=cpu
-ENV TENSORFLOW_APPEND=
-RUN pip --no-cache-dir install https://storage.googleapis.com/tensorflow/linux/${TENSORFLOW_DEVICE}/tensorflow${TENSORFLOW_APPEND}-${TENSORFLOW_VERSION}-cp27-none-linux_x86_64.whl
+
+# Install BAYESIAN FRAMEWORKS
+RUN pip --no-cache-dir install  --upgrade pymc3 pystan edward watermark xgboost bokeh seaborn mmh3 tensorflow theano
 
 ENV KERAS_VERSION=1.2.2
 ENV KERAS_BACKEND=tensorflow
 RUN pip --no-cache-dir install --no-dependencies git+https://github.com/fchollet/keras.git@${KERAS_VERSION}
-
-
-# Install BAYESIAN FRAMEWORKS
-RUN pip --no-cache-dir install  --upgrade pymc3 pystan edward watermark xgboost bokeh seaborn mmh3
-
-
-# dump package lists
-RUN dpkg-query -l > /dpkg-query-l.txt \
- && pip2 freeze > /pip2-freeze.txt
 
 ####################################################PYTHON2########################################################
 
@@ -334,9 +266,6 @@ RUN dpkg-query -l > /dpkg-query-l.txt \
 RUN echo 'alias ll="ls --color=auto -lA"' >> /root/.bashrc \
  && echo '"\e[5~": history-search-backward' >> /root/.inputrc \
  && echo '"\e[6~": history-search-forward' >> /root/.inputrc
-# default password: keras
-ENV PASSWD='sha1:98b767162d34:8da1bc3c75a0f29145769edc977375a373407824'
-
 
 # RUN which python2.7 /usr/bin/python2.7
 RUN ls -la /usr/bin/python2.7
@@ -345,11 +274,7 @@ RUN ln -s /opt/python2.7/lib/python2.7/config/libpython2.7.a /usr/local/lib/
 
 ENV LDFLAGS="-L/opt/python2.7/lib:usr/lib/openblas-base/"
 ENV PATH /usr/lib/openblas-base/:/usr/lib/openblas-base/bin/:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
-#RUN pip install tsne bhtsne
 
-
-#RUN git clone https://github.com/dask/dask-tutorial.git ./dask-tutorial
-#RUN git clone https://github.com/dask/dask-examples.git ./dask-examples
 
 # Set up notebook config
 COPY jupyter_notebook_config.py /root/.jupyter/
@@ -364,29 +289,19 @@ RUN ls -la
 
 RUN jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
-
 RUN apt-get install software-properties-common
 RUN add-apt-repository ppa:george-edison55/cmake-3.x
 RUN apt-get update
 
-RUN apt-get install --upgrade  -y libeigen3-dev
-
 ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/root
 
-RUN pip install --upgrade --no-deps theano tensorflow
-RUN apt-get -qqy install libsasl2-dev libldap2-dev libssl-dev
-RUN pip install superset pyhive mysqlclient skflow bayesian-optimization scikit-neuralnetwork simplejson ujson bson pyyaml
-RUN pip install  python-ldap superset pyhive
-#RUN fabmanager create-admin --app superset
 
+RUN apt-get -qqy install libsasl2-dev libldap2-dev libssl-dev install libpq-dev postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
+RUN pip install superset pyhive mysqlclient skflow bayesian-optimization scikit-neuralnetwork simplejson ujson bson pyyaml python-ldap superset pyhive psycopg2 SQLAlchemy
 
-RUN apt-get -qqy install libpq-dev postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
-RUN pip install psycopg2
-RUN pip install SQLAlchemy
 RUN apt-get -qqy install postgresql postgresql-contrib
-# Run the rest of the commands as the ``postgres`` user created by the ``postgres-9.3`` package when it was ``apt-get installed``
-USER postgres
 
+USER postgres
 # Create a PostgreSQL role named ``docker`` with ``docker`` as the password and
 # then create a database `docker` owned by the ``docker`` role.
 # Note: here we use ``&&\`` to run commands one after the other - the ``\``
@@ -413,41 +328,8 @@ USER root
 
 
 # Expose Ports for TensorBoard (6006), Ipython (8888) drill
-EXPOSE 6006 3838 8787 8888 8786 9786 8788
-# Expose the PostgreSQL port
-EXPOSE 5432
-
-
-WORKDIR "/root/"
-#RUN wget https://raw.githubusercontent.com/karies/cling-all-in-one/master/clone.sh
-#RUN chmod +x clone.sh
-#RUN ./clone.sh           # will require a few minutes to finish
-
-#RUN git clone https://github.com/vgvassilev/cling.git   ./cling
-
-#RUN export PATH=/root/inst/bin/:$PATH
-
-#WORKDIR "/root/inst/share/cling/Jupyter/kernel/"
-#RUN pip install -e .
-#WORKDIR "/root/inst/share/cling/Jupyter/kernel/"
-#RUN jupyter-kernelspec install --user "/root/inst/share/cling/Jupyter/kernel/cling-cpp11"
-
-#RUN jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++17" && \
-#  jupyter-kernelspec install "/root/inst/share/cling/Jupyter/kernel/cling-c++14" && \
-
-#RUN apt-get -qqy  install mesa-common-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev
+EXPOSE 6006 3838 8787 8888 8786 9786 8788 5432
 
 RUN  apt-get -qqy  install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev  libsdl2-dev
 
 RUN glxinfo | grep version
-
-
-#ENTRYPOINT ["./run_jupyter.sh"]
-#ENTRYPOINT ["./run_jupyter.sh"]
-#CMD daskd-scheduler &
-#needs to be set else Celery gives an error (because docker runs commands inside container as root)
-#ENV C_FORCE_ROOT=1
-# run supervisord
-#CMD ["/usr/bin/supervisord"]
-#CMD ["/bin/bash", "-c", "./run_jupyter.sh"]
-
