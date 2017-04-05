@@ -332,4 +332,4 @@ EXPOSE 6006 3838 8787 8888 8786 9786 8788 5432
 
 RUN  apt-get -qqy  install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev  libsdl2-dev
 
-RUN glxinfo | grep version
+#RUN glxinfo | grep version
