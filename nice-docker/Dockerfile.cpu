@@ -16,9 +16,53 @@ RUN apt-get clean
 
 RUN apt-get update && apt-get install -y git cmake build-essential libgoogle-glog-dev libgflags-dev libeigen3-dev libopencv-dev libcppnetlib-dev libboost-dev libboost-iostreams-dev libcurl4-openssl-dev protobuf-compiler libopenblas-dev libhdf5-dev libprotobuf-dev libleveldb-dev libsnappy-dev liblmdb-dev libutfcpp-dev wget unzip supervisor
 
+# install debian packages
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update -qq \
+ && apt-get install --no-install-recommends -y \
+    # install python 2
+    python \
+    python-dev \
+    python2.7-dev \
+    python3-dev \
+    python-virtualenv \
+    python-wheel \
+	python-tk \
+    pkg-config \
+    # requirements for numpy
+    libopenblas-base \
+    python-numpy \
+    python-scipy \
+    # requirements for keras
+    python-h5py \
+    python-yaml \
+    python-pydot \
+    python-nose \
+	python-h5py \
+	python-skimage \
+	python-matplotlib \
+	python-pandas \
+	python-sklearn \
+	python-sympy \
+	ipython \
+	python-joblib \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 
-RUN cmake --version
+RUN apt-get update && apt-get install --no-install-recommends -y clang-3.7 libclang-common-3.7-dev libclang-3.7-dev libclang1-3.7  libllvm-3.7-ocaml-dev libllvm3.7 lldb-3.7 llvm-3.7 llvm-3.7-dev llvm-3.7-runtime clang-modernize-3.7 clang-format-3.7 lldb-3.7-dev
+RUN  apt-get -qqy  install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev  libsdl2-dev
+
+WORKDIR "/root"
+WORKDIR /root/
+RUN wget https://cmake.org/files/v3.8/cmake-3.8.0-rc4.tar.gz
+RUN tar -xvf cmake-3.8.0-rc4.tar.gz
+WORKDIR /root/cmake-3.8.0-rc4
+RUN /root/cmake-3.8.0-rc4/bootstrap
+RUN make
+RUN make install
+
+ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 
 WORKDIR /root
 RUN git clone https://github.com/jpbarrette/curlpp.git
@@ -27,11 +71,40 @@ RUN cmake .
 RUN make install
 
 
+WORKDIR /root
+RUN https://github.com/wjakob/nanogui.git
+WORKDIR /root/nanogui
+RUN cmake .
+RUN make
+
+WORKDIR /root
+RUN git clone https://github.com/glfw/glfw.git && \
+    cd glfw && \
+    mkdir build && \
+    cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=/usr .. && \
+    make -j4 && \
+    make install
+
+
+WORKDIR /root/
+RUN git clone https://github.com/ocornut/imgui.git
+WORKDIR /root/imgui/examples/opengl2_example/
+RUN make
+#RUN make install
+
+
+WORKDIR /root
+RUN https://github.com/vurtun/nuklear.git
+WORKDIR /root/nuklear/demo/glfw_opengl2/
+RUN make
+
+
+
 RUN apt-get update && apt-get install -y software-properties-common && \
     apt-get install -y --no-install-recommends \
         build-essential \
         clinfo \
-        cmake \
         git \
         libboost-all-dev \
         libfftw3-dev \
@@ -55,18 +128,8 @@ RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/lib/libcuda.so.1 && \
     echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
 
-WORKDIR /root
 
-# Build GLFW from source
-RUN git clone https://github.com/glfw/glfw.git && \
-    cd glfw && \
-    mkdir build && \
-    cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX=/usr .. && \
-    make -j4 && \
-    make install
-
-
+RUN glxinfo | grep version
 
 # Very complicated step, took me hours to make it works. this is required for fastparquet
 
@@ -77,7 +140,6 @@ deb-src http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main" >> /etc/apt/
 
 RUN wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | apt-key add -
 
-RUN apt-get update && apt-get install --no-install-recommends -y clang-3.7 libclang-common-3.7-dev libclang-3.7-dev libclang1-3.7  libllvm-3.7-ocaml-dev libllvm3.7 lldb-3.7 llvm-3.7 llvm-3.7-dev llvm-3.7-runtime clang-modernize-3.7 clang-format-3.7 lldb-3.7-dev
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -173,37 +235,6 @@ RUN apt-get update && apt-get install --no-install-recommends  -y \
 
 
 ####################################################PYTHON2########################################################
-# install debian packages
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update -qq \
- && apt-get install --no-install-recommends -y \
-    # install python 2
-    python \
-    python-dev \
-    python-virtualenv \
-    python-wheel \
-	python-tk \
-    pkg-config \
-    # requirements for numpy
-    libopenblas-base \
-    python-numpy \
-    python-scipy \
-    # requirements for keras
-    python-h5py \
-    python-yaml \
-    python-pydot \
-    python-nose \
-	python-h5py \
-	python-skimage \
-	python-matplotlib \
-	python-pandas \
-	python-sklearn \
-	python-sympy \
-	ipython \
-	python-joblib \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
-
 # Install pip
 # pip dependencies
 
@@ -332,29 +363,6 @@ RUN ls -la
 RUN jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 
-WORKDIR "/root"
-
-RUN apt-get -qqy install libeigen3-dev
-
-
-#WORKDIR /root/
-#RUN curl -sSL https://cmake.org/files/v3.5/cmake-3.5.2-Linux-x86_64.tar.gz | tar -xzC /root
-#RUN wget http://www.cmake.org/files/v3.5/cmake-3.5.2.tar.gz
-#RUN tar xf cmake-3.5.2.tar.gz
-#WORKDIR /root/cmake-3.5.2
-#RUN ./configure
-#RUN make
-#RUN make install
-
-WORKDIR /root/
-RUN wget https://cmake.org/files/v3.8/cmake-3.8.0-rc4.tar.gz
-RUN tar -xvf cmake-3.8.0-rc4.tar.gz
-RUN cd cmake-3.8.0-rc4
-RUN /root/cmake-3.8.0-rc4/bootstrap
-RUN make
-RUN make install
-
-
 RUN apt-get install software-properties-common
 RUN add-apt-repository ppa:george-edison55/cmake-3.x
 RUN apt-get update
@@ -365,13 +373,13 @@ ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib/root
 
 RUN pip install --upgrade --no-deps theano tensorflow
 RUN apt-get -qqy install libsasl2-dev libldap2-dev libssl-dev
-RUN pip install superset pyhive mysqlclient pysptk skflow bayesian-optimization scikit-neuralnetwork simplejson ujson bson pyyaml
+RUN pip install superset pyhive mysqlclient skflow bayesian-optimization scikit-neuralnetwork simplejson ujson bson pyyaml
 RUN pip install  python-ldap superset pyhive
 #RUN fabmanager create-admin --app superset
 
 
-RUN apt-get -qqy install libpq-dev postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3 python3-tables
-RUN pip install psycopg2 PyTables
+RUN apt-get -qqy install libpq-dev postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
+RUN pip install psycopg2
 RUN pip install SQLAlchemy
 RUN apt-get -qqy install postgresql postgresql-contrib
 # Run the rest of the commands as the ``postgres`` user created by the ``postgres-9.3`` package when it was ``apt-get installed``
@@ -401,25 +409,11 @@ CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main
 
 USER root
 
-RUN  apt-get -qqy  install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev  libsdl2-dev
-
-
-
-
-WORKDIR /root/
-RUN git clone https://github.com/ocornut/imgui.git
-WORKDIR /root/imgui/examples/opengl3_example/
-RUN make
-#RUN make install
-
-
 
 # Expose Ports for TensorBoard (6006), Ipython (8888) drill
 EXPOSE 6006 3838 8787 8888 8786 9786 8788
 # Expose the PostgreSQL port
 EXPOSE 5432
-
-
 
 
 WORKDIR "/root/"
