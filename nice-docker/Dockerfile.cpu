@@ -11,7 +11,6 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 
-
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get clean
 
@@ -45,7 +44,6 @@ RUN apt-get update && apt-get install --no-install-recommends  -y \
 	python-pandas \
 	python-sklearn \
 	python-sympy \
-	ipython \
 	python-joblib \
         build-essential \
         software-properties-common \
@@ -211,24 +209,21 @@ RUN make
 # Install pip
 # pip dependencies
 
+
 RUN curl --silent https://bootstrap.pypa.io/get-pip.py | python
 RUN pip --no-cache-dir install setuptools==33.1.1
 # Install other useful Python packages using pip
-RUN pip --no-cache-dir install ipython && \
-	pip --no-cache-dir install \
+RUN pip --no-cache-dir install \
 		Cython \
 		werkzeug pillow psycogreen flask celery redis Boto FileChunkIO nltk fuzzywuzzy rotate-backups oauthlib requests pyOpenSSL ndg-httpsclient pyasn1 \
-		ipykernel \
-		jupyter \
 		path.py \
 		Pillow \
 		pygments \
 		six \
 		sphinx \
 		wheel \
-		zmq \
-		&& \
-	python -m ipykernel.kernelspec
+		zmq
+
 
 
 ENV LD_LIBRARY_PATH /usr/lib/llvm-3.7/lib/
@@ -236,7 +231,7 @@ ENV LLVM_CONFIG /usr/lib/llvm-3.7/bin/llvm-config
 
 RUN apt-get -qyy install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libfreetype6-dev libssl-dev libudev-dev libxrandr-dev
 
-RUN pip --no-cache-dir install  cython pytest pandas scikit-learn statsmodels  line-profiler psutil spectrum memory_profiler pandas ipython[all] jupyter joblib pyparsing pydot pydot-ng graphviz pandoc SQLAlchemy flask toolz cloudpickle python-snappy s3fs widgetsnbextension ipywidgets terminado cytoolz bcolz blosc partd backports.lzma mock cachey moto pandas_datareader
+RUN pip --no-cache-dir install  cython pytest pandas scikit-learn statsmodels  line-profiler psutil spectrum memory_profiler pandas joblib pyparsing pydot pydot-ng graphviz pandoc SQLAlchemy flask toolz cloudpickle python-snappy s3fs widgetsnbextension ipywidgets terminado cytoolz bcolz blosc partd backports.lzma mock cachey moto pandas_datareader
 #RUN pip install -i https://pypi.anaconda.org/sklam/simple llvmlite
 #RUN pip --no-cache-dir install fastparquet
 
@@ -276,7 +271,18 @@ ENV LDFLAGS="-L/opt/python2.7/lib:usr/lib/openblas-base/"
 ENV PATH /usr/lib/openblas-base/:/usr/lib/openblas-base/bin/:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 
 
+
 # Set up notebook config
+
+RUN apt-get -qyy install python2.7 python-pip python-dev ipython ipython-notebook
+RUN pip install --upgrade pip
+RUN pip install --upgrade ipython
+RUN pip --no-cache-dir install jupyter
+RUN python -m ipykernel.kernelspec
+RUN python2 -m ipykernel.kernelspec --user
+RUN jupyter notebook --allow-root --generate-config -y
+
+#
 COPY jupyter_notebook_config.py /root/.jupyter/
 
 # Jupyter has issues with being run directly: https://github.com/ipython/ipython/issues/7062
@@ -284,8 +290,6 @@ COPY run_jupyter.sh /root/
 
 WORKDIR "/root/"
 RUN chmod +x run_jupyter.sh
-RUN ls -la
-
 
 RUN jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
@@ -300,6 +304,13 @@ RUN apt-get install -qqy libsasl2-dev libldap2-dev libssl-dev libpq-dev postgres
 RUN pip install superset pyhive mysqlclient skflow bayesian-optimization scikit-neuralnetwork simplejson ujson bson pyyaml python-ldap superset pyhive psycopg2 SQLAlchemy
 
 RUN apt-get -qqy install postgresql postgresql-contrib
+
+
+
+# Expose Ports for TensorBoard (6006), Ipython (8888) drill
+EXPOSE 6006 3838 8787 8888 8786 9786 8788 5432
+RUN  apt-get -qqy  install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev  libsdl2-dev
+
 
 USER postgres
 # Create a PostgreSQL role named ``docker`` with ``docker`` as the password and
@@ -326,10 +337,3 @@ CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main
 
 USER root
 
-
-# Expose Ports for TensorBoard (6006), Ipython (8888) drill
-EXPOSE 6006 3838 8787 8888 8786 9786 8788 5432
-
-RUN  apt-get -qqy  install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev  libsdl2-dev
-
-#RUN glxinfo | grep version
