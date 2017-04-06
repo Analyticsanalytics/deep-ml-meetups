@@ -314,6 +314,11 @@ RUN  apt-get -qqy  install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev 
 RUN apt-get install -qqy x11-apps
 ENV DISPLAY :0
 
+RUN pip install Flask==0.10
+RUN pip install Flask-Bootstrap==3.2.0.2
+RUN pip install simplejson==3.6.0
+RUN pip install Pillow==2.5.1
+
 USER postgres
 # Create a PostgreSQL role named ``docker`` with ``docker`` as the password and
 # then create a database `docker` owned by the ``docker`` role.
