@@ -11,6 +11,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
 
+
 RUN rm -rf /var/lib/apt/lists/*
 RUN apt-get clean
 
@@ -156,6 +157,8 @@ WORKDIR /root/imgui/examples/opengl2_example/
 RUN make
 #RUN make install
 
+
+
 RUN apt-get update && apt-get install -y software-properties-common && \
     apt-get install -y --no-install-recommends \
         build-essential \
@@ -186,9 +189,39 @@ ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
 
 # Very complicated step, took me hours to make it works. this is required for fastparquet
 
+# Very complicated step, took me hours to make it works. this is required for fastparquet
 
-RUN echo "deb http://ppa.launchpad.net/keithw/glfw3/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list.d/fillwave_ext.list
-RUN echo "deb-src http://ppa.launchpad.net/keithw/glfw3/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list.d/fillwave_ext.list
+RUN echo "deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty main \n\
+deb-src http://llvm.org/apt/trusty/ llvm-toolchain-trusty main \n\
+deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main \n\
+deb-src http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main" >> /etc/apt/sources.list
+
+RUN wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | apt-key add -
+
+RUN apt-get update && apt-get install -y clang-3.7 libclang-common-3.7-dev libclang-3.7-dev libclang1-3.7  libllvm-3.7-ocaml-dev libllvm3.7 lldb-3.7 llvm-3.7 llvm-3.7-dev llvm-3.7-runtime clang-modernize-3.7 clang-format-3.7 lldb-3.7-dev
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN echo "/usr/lib/llvm-3.7/lib/" >> /etc/ld.so.conf && ldconfig
+
+
+ENV LD_LIBRARY_PATH /usr/lib/llvm-3.7/lib/
+ENV LLVM_CONFIG /usr/lib/llvm-3.7/bin/llvm-config
+
+RUN apt-get update -qq \
+ && apt-get install --no-install-recommends -y \
+    # install python 3
+    build-essential \
+    clang-3.7 \
+    lldb-3.7 \
+    llvm-3.7 \
+    python-clang-3.7 \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+
+RUN echo "deb http://ppa.launchpad.net/keithw/glfw3/ubuntu trusty main" |  tee -a /etc/apt/sources.list.d/fillwave_ext.list
+RUN echo "deb-src http://ppa.launchpad.net/keithw/glfw3/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/fillwave_ext.list
 
 RUN apt-get update
 
@@ -232,8 +265,8 @@ ENV LLVM_CONFIG /usr/lib/llvm-3.7/bin/llvm-config
 RUN apt-get -qyy install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libfreetype6-dev libssl-dev libudev-dev libxrandr-dev
 
 RUN pip --no-cache-dir install  cython pytest pandas scikit-learn statsmodels  line-profiler psutil spectrum memory_profiler pandas joblib pyparsing pydot pydot-ng graphviz pandoc SQLAlchemy flask toolz cloudpickle python-snappy s3fs widgetsnbextension ipywidgets terminado cytoolz bcolz blosc partd backports.lzma mock cachey moto pandas_datareader
-#RUN pip install -i https://pypi.anaconda.org/sklam/simple llvmlite
-#RUN pip --no-cache-dir install fastparquet
+RUN pip install -i https://pypi.anaconda.org/sklam/simple llvmlite
+RUN pip --no-cache-dir install fastparquet
 
 # Install Theano and set up Theano config (.theanorc) OpenBLAS
 RUN pip --no-cache-dir install theano && \
@@ -282,7 +315,6 @@ RUN python -m ipykernel.kernelspec
 RUN python2 -m ipykernel.kernelspec --user
 RUN jupyter notebook --allow-root --generate-config -y
 
-#
 COPY jupyter_notebook_config.py /root/.jupyter/
 
 # Jupyter has issues with being run directly: https://github.com/ipython/ipython/issues/7062
@@ -311,13 +343,6 @@ RUN apt-get -qqy install postgresql postgresql-contrib
 EXPOSE 6006 3838 8787 8888 8786 9786 8788 5432
 RUN  apt-get -qqy  install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev  libsdl2-dev
 
-RUN apt-get install -qqy x11-apps
-ENV DISPLAY :0
-
-RUN pip install Flask==0.10
-RUN pip install Flask-Bootstrap==3.2.0.2
-RUN pip install simplejson==3.6.0
-RUN pip install Pillow==2.5.1
 
 USER postgres
 # Create a PostgreSQL role named ``docker`` with ``docker`` as the password and
@@ -343,4 +368,3 @@ VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
 
 USER root
-
