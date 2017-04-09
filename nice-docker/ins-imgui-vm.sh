@@ -89,8 +89,8 @@ liblmdb-dev libutfcpp-dev wget unzip supervisor \
 	apt-get clean && \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/* && \
-# Link BLAS library to use OpenBLAS using the alternatives mechanism (https://www.scipy.org/scipylib/building/linux.html#debian-
-ubuntu)
+# Link BLAS library to use OpenBLAS using the alternatives mechanism (https://www.scipy.org/scipylib/building/linux.html#debian-ubuntu)
+
 update-alternatives --set libblas.so.3 /usr/lib/openblas-base/libblas.so.3
 
 echo "deb http://ppa.launchpad.net/keithw/glfw3/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list.d/fillwave_ext.list
@@ -114,7 +114,6 @@ sudo apt-get -qqy install libglew-dev
 sudo apt-get -qqy install libxrender-dev
 sudo apt-get -qqy install libxrandr-dev
 sudo apt-get -qqy install libglm-dev
-
 
 
 cd /tmp/
