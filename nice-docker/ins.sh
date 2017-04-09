@@ -102,12 +102,20 @@ sudo add-apt-repository -y ppa:andykimpe/cmake
 sudo add-apt-repository -y ppa:h-rayflood/llvm-upper
 sudo apt-get -qq -y update
 
-
-apt-get install -qqy --force-yes libglfw3 libglfw3-dev
+apt-get install -qqy --force-yes libglfw3 libglfw3-dev gcc-4.8  g++-4.8 clang-3.5
 apt-get -qyy install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libas
 ound2-dev libpulse-dev libfreetype6-dev libssl-dev libudev-dev libxrandr-dev
 apt-get -qqy install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev libsdl2-dev
 apt-get -qq -y install libsdl2-dev libsdl2-ttf-dev libalut-dev libpng12-dev
+sudo apt-get -qqy install libxext-dev
+sudo apt-get -qqy install libpng-dev
+sudo apt-get -qqy install libimlib2-dev
+sudo apt-get -qqy install libglew-dev
+sudo apt-get -qqy install libxrender-dev
+sudo apt-get -qqy install libxrandr-dev
+sudo apt-get -qqy install libglm-dev
+
+
 
 cd /tmp/
 wget https://cmake.org/files/v3.8/cmake-3.8.0-rc4.tar.gz
@@ -116,3 +124,11 @@ cd /tmp/cmake-3.8.0-rc4
 ./bootstrap
 make
 make install
+
+cd /tmp
+git clone https://github.com/g-truc/glm.git
+cd /tmp/glm/
+cmake .
+make
+make install 
+
