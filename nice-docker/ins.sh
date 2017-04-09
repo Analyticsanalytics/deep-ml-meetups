@@ -102,7 +102,7 @@ sudo add-apt-repository -y ppa:andykimpe/cmake
 sudo add-apt-repository -y ppa:h-rayflood/llvm-upper
 sudo apt-get -qq -y update
 
-apt-get install -qqy --force-yes libglfw3 libglfw3-dev gcc-4.8  g++-4.8 clang-3.5
+apt-get install -qqy --force-yes libglfw3 libglfw3-dev 
 apt-get -qyy install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libas
 ound2-dev libpulse-dev libfreetype6-dev libssl-dev libudev-dev libxrandr-dev
 apt-get -qqy install mesa-common-dev freeglut3-dev libglfw-dev libglm-dev libglew1.6-dev xorg-dev libglu1-mesa-dev libsdl2-dev
@@ -132,3 +132,7 @@ cmake .
 make
 make install 
 
+cd /tmp
+git clone --recursive  https://github.com/tamaskenez/imgui-cmake.git
+cd /tmp/imgui-cmake/
+./cmake-testbuild.sh
