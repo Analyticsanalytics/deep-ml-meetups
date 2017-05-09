@@ -337,7 +337,7 @@ RUN pip install superset pyhive mysqlclient skflow bayesian-optimization scikit-
 
 RUN apt-get -qqy install postgresql postgresql-contrib
 
-
+Run pip install http://h2o-release.s3.amazonaws.com/h2o/rel-turing/10/Python/h2o-3.10.0.10-py2.py3-none-any.whl
 
 # Expose Ports for TensorBoard (6006), Ipython (8888) drill
 EXPOSE 6006 3838 8787 8888 8786 9786 8788 5432
