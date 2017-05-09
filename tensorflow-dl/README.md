@@ -4,6 +4,12 @@ Files for the Workshop: Deep Learning with TensorFlow meetup https://www.meetup.
 
 # Links:
 
+http://web.stanford.edu/class/cs20si/syllabus.html
+
+https://github.com/leriomaggio/deep-learning-keras-tensorflow
+
+https://github.com/sherrym/tf-tutorial/blob/master/DeepLearningSchool2016.pdf
+
 https://github.com/aymericdamien/TensorFlow-Examples
 
 https://github.com/hunkim/DeepLearningZeroToAll
