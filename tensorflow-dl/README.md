@@ -6,6 +6,8 @@ Files for the Workshop: Deep Learning with TensorFlow meetup https://www.meetup.
 
 https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class2_tensor_flow.ipynb
 
+https://github.com/sherrym/tf-tutorial/blob/master/install-mac-docker.md
+
 http://web.stanford.edu/class/cs20si/syllabus.html
 
 https://github.com/leriomaggio/deep-learning-keras-tensorflow
