@@ -4,6 +4,26 @@ from scipy.special import expit
 print logistic.cdf(0.387)
 print expit(0.387)
 
+def softmax(z):
+    # z is a vector
+    return np.exp(z) / np.sum(np.exp(z))
+ 
+def sigmoid(x):
+    # x can be a vector
+    return 1.0/(1.0+np.exp(-x))
+ 
+def sigmoid_gradient(x):
+    # x can be a vector
+    return sigmoid(x)*(1-sigmoid(x))
+ 
+def ReLU(x):
+    # x can be a vector
+    return np.maximum(x,0)
+ 
+def ReLU_gradient(x):
+    # x can be a vector
+    return 1.0*(x>0)
+
 def ddsigmoid(z):
   return expit(z) * (1.0 - expit(z))
 
