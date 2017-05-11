@@ -1,10 +1,12 @@
-# Workshop: Deep Learning with Google Cloud, TensorFlow & BigQuery
+#Deep Learning with Google Cloud, TensorFlow & BigQuery
 
-Files for the Workshop: Deep Learning with TensorFlow meetup https://www.meetup.com/DATA-SCIENCE-TLV/events/237858719/
+Files for the Workshop: Deep Learning with TensorFlow meetup :https://www.meetup.com/TensorFlow-Tel-Aviv/
 
 # Links:
 
 https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class2_tensor_flow.ipynb
+
+http://sdsawtelle.github.io/blog/output/getting-started-with-tensorflow-in-jupyter.html
 
 https://github.com/sherrym/tf-tutorial/blob/master/install-mac-docker.md
 
