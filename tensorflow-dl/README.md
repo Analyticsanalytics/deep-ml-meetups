@@ -52,3 +52,5 @@ http://jorditorres.org/first-contact-with-tensorflow/
 http://nasdag.github.io/blog/2016/01/19/classifying-bees-with-google-tensorflow/
 
 
+![Data Lab](data_lab_notebook.png)
+
