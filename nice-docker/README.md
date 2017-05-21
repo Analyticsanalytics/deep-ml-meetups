@@ -46,7 +46,7 @@ chmod +x run_jupyter.sh
  
 # Build the image
 
-docker build -t docker pull quantscientist/deep-ml-meetups -f Dockerfile.cpu .
+docker build -t quantscientist/deep-ml-meetups -f Dockerfile.cpu .
 
 ![Building the image](nice-docker.png)
 
