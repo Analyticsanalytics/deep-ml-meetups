@@ -1,4 +1,4 @@
-#Deep Learning with Google Cloud, TensorFlow & BigQuery
+# Deep Learning with Google Cloud, TensorFlow & BigQuery
 
 Files for the Workshop: Deep Learning with TensorFlow meetup :https://www.meetup.com/TensorFlow-Tel-Aviv/
 
