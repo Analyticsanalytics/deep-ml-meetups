@@ -2,6 +2,8 @@
 
 Files for the Workshop: Deep Learning with TensorFlow meetup :https://www.meetup.com/TensorFlow-Tel-Aviv/
 
+![Jup](data-lab.png)
+
 # Links:
 
 Docker tutorial:
