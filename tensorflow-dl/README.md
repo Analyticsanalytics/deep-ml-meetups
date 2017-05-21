@@ -4,6 +4,10 @@ Files for the Workshop: Deep Learning with TensorFlow meetup :https://www.meetup
 
 # Links:
 
+Docker tutorial:
+https://github.com/QuantScientist/deep-ml-meetups/blob/master/tensorflow-dl/dokcer_tf_meetup.ipynb
+
+TensorFlow links:
 https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class2_tensor_flow.ipynb
 
 http://sdsawtelle.github.io/blog/output/getting-started-with-tensorflow-in-jupyter.html
