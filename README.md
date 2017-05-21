@@ -7,9 +7,7 @@ http://deep-ml.com/My%20Book/
 
 
 ## Data Science meetups
-https://www.meetup.com/DATA-SCIENCE-TLV/
+https://www.meetup.com/TensorFlow-Tel-Aviv/
 
-## Kaggle
-https://www.kaggle.com/solomonk
 
 
