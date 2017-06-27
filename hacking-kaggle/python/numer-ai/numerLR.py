@@ -62,21 +62,6 @@ class NumerLR(object):
             # 'NumerCommon.PIP_GRID_LR_PURE':NumerCommonML.PIP_GRID_LR_PURE,
         }
 
-
-
-
-        # X_test, X_train, X_valid, df_test, y_train, y_valid = NumerCommonML.loadDataSplit(r_state=989)
-        #
-        # # 2-class logistic regression in Keras
-        # model = Sequential()
-        # model.add(Dense(1, activation='sigmoid', input_dim=X_train.shape[1]))
-        # model.compile(optimizer='rmsprop', loss='binary_crossentropy')
-        #
-        #
-        # model.fit(X_train, y_train, nb_epoch=10, validation_data=(X_valid, y_valid))
-        # scores = model.evaluate(X_valid, y_valid, verbose=0)
-        # print("%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
-
         i = 0
         i = i + 1
         for key, classifier in clfs.iteritems():
@@ -85,11 +70,7 @@ class NumerLR(object):
             X_test, X_train, X_valid, df_test, y_train, y_valid = NumerCommonML.loadFeaturesSplit(r_state=r_state)
 
             print('Fitting:' + key)
-            print(str(classifier))
-
-            # scores = cross_val_score(estimator=classifier, X=X_train, y=y_train, cv=5, scoring='roc_auc')
-            # print("ROC AUC: %0.6f (+/- %0.6f)" % (scores.mean(), scores.std()))
-
+            print(str(classifier))            
 
             start_time = time.time()
             classifier.fit(X_train, y_train)
@@ -105,9 +86,7 @@ class NumerLR(object):
                 'probability': p_test[:, 1]
             })
             NumerCommonML.savePred(df_pred, key, loss)
-            final_scores[key]=loss
-
-        #
+            final_scores[key]=loss        
 
         print (sorted(final_scores.items(), key=lambda x: x[1]))
 
