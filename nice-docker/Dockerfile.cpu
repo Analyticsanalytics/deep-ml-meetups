@@ -7,6 +7,11 @@ FROM ubuntu:trusty
 
 MAINTAINER Shlomo <shlomo@deep-ml.com>
 
+ENV http_proxy http://147.234.159.146:3128
+ENV https_proxy http://147.234.159.146:3128
+ENV no_proxy 127.0.0.1,147.234.154.159,alpina,147.234.159.138,globe,ibiza,ecitele.com,147.234.150.92,ecicloud.com,172.0.0.0/8,147.234.245.15
+
+
 ENV DEBIAN_FRONTEND noninteractive
 
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
@@ -156,19 +161,25 @@ RUN git clone https://github.com/glfw/glfw.git && \
     make -j4 && \
 make install
 
+RUN apt-get install libopenblas-dev libfftw3-dev liblapacke-dev
+
 WORKDIR /root
 
 ENV AF_PATH=/opt/arrayfire AF_DISABLE_GRAPHICS=1
-ARG COMPILE_GRAPHICS=OFF
+#ARG COMPILE_GRAPHICS=ON
+
+ENV AF_PATH=/opt/arrayfire AF_DISABLE_GRAPHICS=1
+#ARG COMPILE_GRAPHICS=OFF
+
 RUN git clone --recursive https://github.com/arrayfire/arrayfire.git -b master && \
     cd arrayfire && mkdir build && cd build && \
     cmake .. -DCMAKE_INSTALL_PREFIX=/opt/arrayfire-3 \
              -DCMAKE_BUILD_TYPE=Release \
              -DBUILD_CPU=ON \
              -DBUILD_CUDA=OFF \
-             -DBUILD_OPENCL=ON \
+             -DBUILD_OPENCL=OFF \
              -DBUILD_UNIFIED=ON \
-             -DBUILD_GRAPHICS=${COMPILE_GRAPHICS} \
+             -DBUILD_GRAPHICS=OFF \
              -DBUILD_NONFREE=OFF \
              -DBUILD_EXAMPLES=ON \
              -DBUILD_TEST=ON \
