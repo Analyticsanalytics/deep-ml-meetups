@@ -7,11 +7,6 @@ FROM ubuntu:trusty
 
 MAINTAINER Shlomo <shlomo@deep-ml.com>
 
-ENV http_proxy http://147.234.159.146:3128
-ENV https_proxy http://147.234.159.146:3128
-ENV no_proxy 127.0.0.1,147.234.154.159,alpina,147.234.159.138,globe,ibiza,ecitele.com,147.234.150.92,ecicloud.com,172.0.0.0/8,147.234.245.15
-
-
 ENV DEBIAN_FRONTEND noninteractive
 
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:.
