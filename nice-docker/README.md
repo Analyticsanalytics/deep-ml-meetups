@@ -1,4 +1,7 @@
-# All-in-one Jupyter Docker image for: Deep Learning, Bayesian Machine Learning, Distributed DataFrames, C++11/C++14 support, Eigen3, TensorFlow and more
+#DEPRECATED SEE: https://github.com/QuantScientist/Deep-Learning-Boot-Camp/tree/master/docker
+
+###
+All-in-one Jupyter Docker image for: Deep Learning, Bayesian Machine Learning, Distributed DataFrames, C++11/C++14 support, Eigen3, TensorFlow and more
 
 NOTE: Building this image may take several hours since CMAKE is being built from source. 
 https://github.com/QuantScientist/deep-ml-meetups
