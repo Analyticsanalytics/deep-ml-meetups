@@ -1,4 +1,4 @@
-#DEPRECATED SEE: https://github.com/QuantScientist/Deep-Learning-Boot-Camp/tree/master/docker
+# DEPRECATED SEE: https://github.com/QuantScientist/Deep-Learning-Boot-Camp/tree/master/docker
 
 ###
 All-in-one Jupyter Docker image for: Deep Learning, Bayesian Machine Learning, Distributed DataFrames, C++11/C++14 support, Eigen3, TensorFlow and more
